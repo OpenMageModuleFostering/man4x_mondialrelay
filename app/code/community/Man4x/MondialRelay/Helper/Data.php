@@ -160,7 +160,7 @@ class Man4x_MondialRelay_Helper_Data
      * 
      * @param float $weight
      * @param string unit
-     * @return float 
+     * @return integer 
      */
     public function convertWeight($weight, $unit)
     {
@@ -175,7 +175,7 @@ class Man4x_MondialRelay_Helper_Data
             case 'lb':
                 $weight *= 453.6;
         }
-        return $weight;
+        return ceil($weight);
     }
     
     /**
@@ -232,7 +232,6 @@ class Man4x_MondialRelay_Helper_Data
         {
             $data['mondialrelay_ws_error_msg'] = $this->convertStatToTxt($errorCode);
         }
-        die(var_dump($data));
         Mage::log(print_r($data, true) . self::CSV_EOL, Zend_Log::DEBUG, self::LOG_FILE, true);        
     }
     
