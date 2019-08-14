@@ -59,7 +59,8 @@ class Man4x_MondialRelay_Model_Observer
                 $_order->setShippingMethod($_pickupMethod);
 
                 // We convert quote address model to order address model
-                $_osAddress = Mage::getModel('Sales/Convert_Quote')->addressToOrderAddress($_address);
+                // $_osAddress = Mage::getModel('Sales/Convert_Quote')->addressToOrderAddress($_address);
+                $_osAddress = $_address;
                 
                 // Shipping address replacement with pick-up data
                 $_osAddress->setCompany($_selpickup['name'])
@@ -69,7 +70,8 @@ class Man4x_MondialRelay_Model_Observer
                         ->setCountryId($_selpickup['country_id'])
                         ->setShippingMethod($_pickupMethod);
 
-                $_order->setShippingAddress($_osAddress);
+                Mage::helper('checkout/cart')->getQuote()->setShippingAddress($_osAddress);
+                // $_order->setShippingAddress($_osAddress);
             }
         }
     }
@@ -101,11 +103,16 @@ class Man4x_MondialRelay_Model_Observer
                 $_wsResult = $_carrier->wsRegisterShipment($_order);
                 if (!property_exists($_wsResult, 'ExpeditionNum'))
                 {
+                    $_errMsg = Mage::helper('mondialrelay')->convertStatToTxt($_wsResult->STAT);
+                    if (Mage::getStoreConfig('carriers/mondialrelay/debug_mode', $_order->getStore()))
+                    {
+                        $_errMsg .= ' [Debug data || ' . print_r($_wsResult->wsParams, true) . ']';
+                    }
                     Mage::throwException(
                             Mage::helper('mondialrelay')->__(
                                     'Mondial Relay shipment error for order #%s (%s)', 
                                     $_order->getIncrementId(),
-                                    Mage::helper('mondialrelay')->convertStatToTxt($_wsResult->STAT)
+                                    $_errMsg
                             )
                     );
                 }

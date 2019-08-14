@@ -532,10 +532,11 @@ class Man4x_MondialRelay_Model_Carrier_Abstract extends Mage_Shipping_Model_Carr
             // Debugging Log
             Mage::helper('mondialrelay')->logDebugData($_params);
         }
-        //die(var_dump($_params));
         // Web Service Connection
         $_client = new SoapClient($this->_getGenericConfigData('url_ws', $order->getStore()));
         $_wsResult = $_client->WSI2_CreationExpedition($_params)->WSI2_CreationExpeditionResult;
+        // We save the WS params in the result for debugging purposes
+        $_wsResult->wsParams = $_params;
         return $_wsResult;
     }
 
@@ -572,9 +573,9 @@ class Man4x_MondialRelay_Model_Carrier_Abstract extends Mage_Shipping_Model_Carr
             'Expe_Ad2' => $_helper->removeAccent($_senderAddress[1]),
             'Expe_Ad3' => $_helper->removeAccent($_senderAddress[2]),
             'Expe_Ad4' => $_helper->removeAccent($_senderAddress[3]),
-            'Expe_Ville' => trim(strtoupper($this->_getGenericConfigData('sender_city', $_store))),
+            'Expe_Ville' => $_helper->removeAccent($this->_getGenericConfigData('sender_city', $_store)),
             'Expe_CP' => $this->_getGenericConfigData('sender_postcode', $_store),
-            'Expe_Pays' => trim(strtoupper($this->_getGenericConfigData('sender_country', $_store))),
+            'Expe_Pays' => $_helper->removeAccent($this->_getGenericConfigData('sender_country', $_store)),
             'Expe_Tel1' => $this->_getGenericConfigData('sender_phone', $_store),
             'Expe_Tel2' => $this->_getGenericConfigData('sender_mobile', $_store),
             'Expe_Mail' => $this->_getGenericConfigData('sender_email', $_store),
@@ -595,7 +596,7 @@ class Man4x_MondialRelay_Model_Carrier_Abstract extends Mage_Shipping_Model_Carr
             'CRT_Devise' => 'EUR',
             'Exp_Valeur' => '0',
             'Exp_Devise' => 'EUR',
-            'COL_Rel_Pays' => trim(strtoupper($this->_getGenericConfigData('sender_country', $_store))),
+            'COL_Rel_Pays' => $_helper->removeAccent($this->_getGenericConfigData('sender_country', $_store)),
             'COL_Rel' => (('CCC' === $this->_getGenericConfigData('collection_mode', $_store)) ? '' : $this->_getGenericConfigData('collection_pickup', $_store)),
             'LIV_Rel_Pays' => $order->getShippingAddress()->getCountryId(),
             'LIV_Rel' => '0', // Pickup store ID

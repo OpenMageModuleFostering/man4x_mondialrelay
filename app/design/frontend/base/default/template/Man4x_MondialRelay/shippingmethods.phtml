@@ -22,7 +22,19 @@
 ?>
 
 <script type="text/javascript">
-//<![CDATA[    
+//<![CDATA[
+    function anchorToMethodDescription(e) {
+        // return element where to insert method description
+        return $(e.parentNode);
+    }
+    function anchorToPickupSelectionLink(e) {
+        // return element where to insert pickup selection link
+        return $(e.parentNode);
+    }
+    function anchorToInfoLink(e) {
+        // return element where to insert pickup info link
+        return $(e.next('p'));
+    }    
     <?php echo $this->getMethodsDescription() ?>
     // Add description for Mondial Relay shipping methods
     // Add a link to open pick-up selection form, a div to show the selected pick-up and an hidden form field
@@ -30,19 +42,19 @@
         function(e) {
             e = $(e);
             Event.observe(e, 'click', function() {
+                // Enable/disable the selected pickup div
                 e.readAttribute('id') == 's_method_mondialrelaypickup_24R' ? $('pickup-selected').show() : $('pickup-selected').hide();
-            });
-            
+            });          
             var _method = e.readAttribute('id'); 
             if (_method.indexOf('mondialrelay') != -1) {
-                var _parent = $(e.parentNode);
-                _parent.insert("<p class='method-description'>" + _methodsDesc[_method.substring(9)] + "</p>");
-                
+                var _parent = anchorToMethodDescription(e);
+                _parent.insert("<p class='method-description'>" + _methodsDesc[_method.substring(9)] + "</p>");                
                 if (_method.indexOf('pickup') != -1) {
                     if (<?php echo $this->onMapSelection() ?>) {
                         e.checked = false;
                         e.disable();
                         var _link = new Element('a', {id: 'pickup-selection-link', href: 'javascript:void(0)'}).update("<?php echo (Mage::helper('mondialrelay')->__('Click to select your pick-up location')); ?>");
+                        _parent = anchorToPickupSelectionLink(e);
                         _parent.insert(_link);
                         
                         Event.observe(_link, 'click', function() {
@@ -72,7 +84,8 @@
                     }
                     else if (_method.split('_').length === 5) {
                         var _link = new Element('a', {'class': 'pickup-details-link', href: 'javascript:void(0)'}).update("<?php echo (Mage::helper('mondialrelay')->__('(More info)')); ?>");
-                        e.next('p').insert(_link);                        
+                        var _anchor = anchorToInfoLink(e);
+                        _anchor.insert(_link);                        
 
                         Event.observe(_link, 'click', function() {
                             var _docDim = document.viewport.getDimensions();
