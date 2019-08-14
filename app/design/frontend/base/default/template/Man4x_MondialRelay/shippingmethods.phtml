@@ -25,11 +25,13 @@
 //<![CDATA[
     function anchorToMethodDescription(e) {
         // return element where to insert method description
-        return $(e.parentNode);
+        if (e.parentNode.hasClassName('no-display')) {return e.parentNode.parentNode;}
+        else {return $(e.parentNode);}
     }
     function anchorToPickupSelectionLink(e) {
         // return element where to insert pickup selection link
-        return $(e.parentNode);
+        if (e.parentNode.hasClassName('no-display')) {return e.parentNode.parentNode;}
+        else {return $(e.parentNode);}
     }
     function anchorToInfoLink(e) {
         // return element where to insert pickup info link

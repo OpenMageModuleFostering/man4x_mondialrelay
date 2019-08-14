@@ -566,7 +566,7 @@ class Man4x_MondialRelay_Model_Carrier_Abstract extends Mage_Shipping_Model_Carr
             'ModeCol' => $this->_getGenericConfigData('collection_mode', $_store), // Collection mode
             'ModeLiv' => $_shippingMethod[1], // 24R, LCD...
             'NDossier' => $order->getIncrementId(),
-            'NClient' => substr($_helper->removeAccent(preg_replace("/[^A-Za-z]/", "", $order->getBillingAddress()->getLastname())), 0, 12),
+            'NClient' => substr($_helper->removeAccent(preg_replace("/[^A-Za-z]/", "", $order->getBillingAddress()->getLastname())), 0, 8),
             // 'Expe_Langage' => strtoupper(substr(Mage::app()->getLocale()->getLocaleCode(), 0, 2)), // Backend language
             'Expe_Langage' => 'FR',
             'Expe_Ad1' => $_helper->removeAccent($_senderAddress[0]), // Sender address
