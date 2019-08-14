@@ -14,7 +14,7 @@
  *
  * @project     Magento Man4x Mondial Relay Module
  * @desc        Mondial Relay carrier model class for pickup deliveries
- * @author      Emmanuel Catrysse (ecatrysse@claudebell.com)
+ * @author      Emmanuel Catrysse (man4x[@]hotmail[.]fr)
  * @license     http://www.opensource.org/licenses/MIT  The MIT License (MIT)
  */
 

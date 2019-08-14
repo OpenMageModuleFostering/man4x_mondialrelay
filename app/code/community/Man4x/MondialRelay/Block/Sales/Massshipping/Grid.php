@@ -15,7 +15,7 @@
  * @project     Magento Man4x Mondial Relay Module
  * @desc        Mass shipping grid.
  *              Enable mass shipping (through web service or flat file)
- * @author      Emmanuel Catrysse (ecatrysse@claudebell.com)
+ * @author      Emmanuel Catrysse (man4x[@]hotmail[.]fr)
  * @license     http://www.opensource.org/licenses/MIT  The MIT License (MIT)
  */
 
@@ -26,9 +26,10 @@ class Man4x_MondialRelay_Block_Sales_Massshipping_Grid
     {
         parent::__construct();
         $this->setId('sales_massshipping_grid');
+        $this->setUseAjax(true);
         $this->setDefaultSort('created_at');
         $this->setDefaultDir('ASC');
-        $this->setSaveParametersInSession(true);
+        $this->setSaveParametersInSession(false);
     }
 
     protected function _getCollectionClass()
@@ -36,17 +37,22 @@ class Man4x_MondialRelay_Block_Sales_Massshipping_Grid
         return 'sales/order_invoice_grid_collection';
     }
 
-    protected function _prepareCollection()
+    private function _getOrdersCollection()
     {
         $_collection = Mage::getResourceModel($this->_getCollectionClass())
                 ->join(
                         'order',
                         'main_table.order_increment_id = order.increment_id',
-                        array('shipping_method', 'status', 'entity_id')
+                        array('shipping_method', 'status', 'entity_id', 'weight')
                         )
                 ->addAttributeToFilter('shipping_method', array("like" => 'mondialrelay%'))
                 ->addAttributeToFilter('status', 'processing');
-
+        return $_collection;
+    }
+    
+    protected function _prepareCollection()
+    {
+        $_collection = $this->_getOrdersCollection();
         $this->setCollection($_collection);
         return parent::_prepareCollection();
     }
@@ -126,18 +132,28 @@ class Man4x_MondialRelay_Block_Sales_Massshipping_Grid
                 'index'             => 'shipping_method',
                 )
             );
-/*
+
         $this->addColumn(
-            'state',
-            array(
-                'header'            => Mage::helper('sales')->__('Status'),
-                'index'             => 'status',
-                'type'              => 'options',
-                'options'           => Mage::getSingleton('sales/order_config')->getStatuses(),
+            'weight',
+             array(
+                'header'            => Mage::helper('sales')->__('Weight (calculated)'),
+                'index'             => 'weight',
                 )
             );
-*/
-        if (Mage::getSingleton('admin/session')->isAllowed('sales/order/actions/view'))
+
+        $this->addColumn(
+            'poids',
+            array(
+                'header'            => Mage::helper('sales')->__('Weight (real)'),
+            	'type'              => 'input',
+                'name'              => 'poids',
+            	'validate_class'    => 'validate-not-negative-number',
+                'editable'          => true,
+                )
+            );
+
+/*
+        if (Mage::getSingleton('admin/session')->isAllowed('mondialrelay/index/actions/view'))
         {
             $this->addColumn(
                     'action',
@@ -148,18 +164,21 @@ class Man4x_MondialRelay_Block_Sales_Massshipping_Grid
                         'getter'    => 'getId',
                         'actions'   => array(
                                         array(
-                                            'caption'   => Mage::helper('sales')->__('View'),
-                                            'url'       => array('base' => 'adminhtml/sales_order/view'),
+                                            'caption'   => Mage::helper('mondialrelay')->__('Change weight'),
+                                            'url'       => array('base' => ''),
                                             'field'     => 'order_id',
                                             )
                                        ),
-                        'filter'     => false,
-                        'sortable'   => false,
-                        'index'      => 'stores',
-                        'is_system'  => true,
+                        'renderer'  => 'Man4x_MondialRelay_Block_Adminhtml_GridJsRendererAction',
+                        'filter'    => false,
+                        'sortable'  => false,
+                        'index'     => 'stores',
+                        'is_system' => true,
                         )
                     );
         }
+*/
+        
 
         $this->addExportType('*/*/exportCsv', Mage::helper('sales')->__('CSV'));
         $this->addExportType('*/*/exportExcel', Mage::helper('sales')->__('Excel'));
@@ -200,9 +219,41 @@ class Man4x_MondialRelay_Block_Sales_Massshipping_Grid
         return $this;
     }
 
+    /**
+    /* Ajax grid refreshing URL
+    */
     public function getGridUrl()
     {
-        return $this->getUrl('*/*/*', array('_current' => true));
+       return $this->_getData('grid_url') ? $this->_getData('grid_url') : $this->getUrl('*/*/ajaxgrid', array('_current'=>true));
     }
+
+    /**
+    /* Called by the linked widget block serializer to get initial values
+    */
+    public function getRealWeights()
+    {
+        $_realWeights = array();
+		$_savedWeights = array();
+        if (Mage::getSingleton('adminhtml/session')->hasMondialRelayRealWeight())
+		{
+			$_savedWeights = Mage::getSingleton('adminhtml/session')->getMondialRelayRealWeight();
+		}
+        foreach($this->_getOrdersCollection()->load() as $_order)
+        {
+            $_realWeights[$_order->getId()] = 
+				array('poids' => (isset($_savedWeight[$_order->getId()]) ? $_savedWeight[$_order->getId()] : $_order->getWeight()));
+        }
+        return $_realWeights;
+    }
+    
+    protected function _afterToHtml($html)
+    {
+        // We had the 'checkbox' class to the checkbox input to enable grid serializer code
+        $html = str_replace('massaction-checkbox', 'massaction-checkbox checkbox', $html);
+        // We replace the grid [validate] button default action to call our JS
+        $html = str_replace("sales_massshipping_grid_massactionJsObject.apply()", "prepareWs(sales_massshipping_grid_massactionJsObject, 'real_weight_input');", $html);
+        return $html;
+    }
+
 
 }

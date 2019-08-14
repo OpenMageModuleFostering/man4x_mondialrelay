@@ -15,7 +15,7 @@
  * @project     Magento Man4x Mondial Relay Module
  * @desc        Label printing grid.
  *              Enable the mass label printing through web service
- * @author      Emmanuel Catrysse (ecatrysse@claudebell.com)
+ * @author      Emmanuel Catrysse (man4x[@]hotmail[.]fr)
  * @license     http://www.opensource.org/licenses/MIT  The MIT License (MIT)
  */
 class Man4x_MondialRelay_Block_Sales_Labelprinting_Grid
@@ -113,7 +113,7 @@ class Man4x_MondialRelay_Block_Sales_Labelprinting_Grid
                 'type'      => 'number',
                 )
             );
-
+/*
         $this->addColumn(
             'action',
             array(
@@ -124,7 +124,7 @@ class Man4x_MondialRelay_Block_Sales_Labelprinting_Grid
                 'actions'   => array(
                                 array(
                                     'caption'   => Mage::helper('sales')->__('View'),
-                                    'url'       => array('base' => '*/sales_shipment/view'),
+                                    'url'       => array('base' => 'sales/sales_shipment/view'),
                                     'field' => 'shipment_id',
                                     )
                                 ),
@@ -133,6 +133,7 @@ class Man4x_MondialRelay_Block_Sales_Labelprinting_Grid
                 'is_system' => true,
                 )
             );
+*/
 
         $this->addExportType('*/*/exportCsv', Mage::helper('sales')->__('CSV'));
         $this->addExportType('*/*/exportExcel', Mage::helper('sales')->__('Excel'));

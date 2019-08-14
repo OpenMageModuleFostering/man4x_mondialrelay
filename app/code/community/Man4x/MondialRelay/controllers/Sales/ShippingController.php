@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright (c) 2013 Man4x
  *
@@ -14,13 +15,13 @@
  *
  * @project     Magento Man4x Mondial Relay Module
  * @desc        Mondial Relay mass shipping / mass label printing controller for admin
- * @author      Emmanuel Catrysse (ecatrysse@claudebell.com)
+ * @author      Emmanuel Catrysse (man4x[@]hotmail[.]fr)
  * @license     http://www.opensource.org/licenses/MIT  The MIT License (MIT)
  */
-
 require_once 'Mage/Adminhtml/controllers/Sales/Order/ShipmentController.php';
-class Man4x_MondialRelay_Sales_ShippingController
-    extends Mage_Adminhtml_Sales_Order_ShipmentController {
+
+class Man4x_MondialRelay_Sales_ShippingController extends Mage_Adminhtml_Sales_Order_ShipmentController
+{
 
     /**
      * Additional initialization
@@ -57,32 +58,53 @@ class Man4x_MondialRelay_Sales_ShippingController
     }
 
     /**
+     * Refresh mass shipping grid
+     */
+    public function ajaxGridAction()
+    {
+        $this->loadLayout('empty');
+        $this->getLayout()->createBlock('core/text_list', 'root', array('output' => 'toHtml'));
+        $_grid = $this->getLayout()->createBlock('mondialrelay/sales_massshipping_grid')->setOrderIds($this->getRequest()->getPost('order_ids', null));
+        $this->getLayout()->getBlock('root')->append($_grid);
+        $_formkey = $this->getLayout()->createBlock('core/template', 'formkey')->setTemplate('formkey.phtml');
+        $this->getLayout()->getBlock('root')->append($_formkey);
+        $this->getResponse()->setBody($this->getLayout()->getBlock('root')->toHtml());
+    }
+
+    /**
      * Mondial Relay mass shipping (Web Service)
      * From Admin > Sales > Mondial Relay > Mass Shipment, Action = mass shipping (web service)
      */
     public function massShippingWsAction()
     {
+        // We recover the real weights defined from the mass shipping grid and save them in admin session
+        $_realWeights = Mage::helper('adminhtml/js')->decodeGridSerializedInput($this->getRequest()->getPost('real_weight_input', ''));
+        Mage::getSingleton('adminhtml/session')->setMondialRelayRealWeight($_realWeights);
+
         $_orderIds = (array) $this->getRequest()->getPost('order_ids');
         $_nbOrders = count($_orderIds);
         $_shipmentIds = array();
-        
+
         // Flag to trigger Mondial Relay registration in Man4x_MondialRelay_Model_Observer->registerShipment()
         Mage::getSingleton('adminhtml/session')->setMondialRelayWsRegistration(true);
-               
+
         foreach ($_orderIds as $_orderId)
         {
             $_order = Mage::getModel('sales/order')->load($_orderId);
-            if (! $_order->getId()) {continue;}
-            
+            if (!$_order->getId())
+            {
+                continue;
+            }
+
             // Determines whether notification email must be sent
             $_shipment = array(
                 'send_email' => (bool) Mage::getStoreConfig('carriers/mondialrelay/sendemail', $_order->getStoreId()),
-                );
-            
-            $this->getRequest()->setParam('order_id', $_orderId);            
+            );
+
+            $this->getRequest()->setParam('order_id', $_orderId);
             $this->getRequest()->setPost('shipment', $_shipment);
             $this->saveAction();
-            
+
             $_shipment = Mage::registry('current_shipment');
             Mage::unregister('current_shipment');
             if ($_shipment instanceof Mage_Sales_Model_Order_Shipment)
@@ -93,8 +115,8 @@ class Man4x_MondialRelay_Sales_ShippingController
                 }
             }
         }
-        
-        // Remove the session flag
+
+        // Remove the session flag and weight array
         Mage::getSingleton('adminhtml/session')->unsMondialRelayWsRegistration();
 
         if ($_nbOrders == count($_shipmentIds))
@@ -119,12 +141,12 @@ class Man4x_MondialRelay_Sales_ShippingController
     {
         $_file = '';
         $_fileName = 'mondialrelay_export_' . Mage::getSingleton('core/date')->date('Ymd_His') . '.txt';
-        
+
         $_orderIds = (array) $this->getRequest()->getPost('order_ids');
         if (count($_orderIds) > 100)
         {
             $this->_getSession()->addError(
-                Mage::helper('mondialrelay')->__('Too many orders: 100 max. by export file.'));
+                    Mage::helper('mondialrelay')->__('Too many orders: 100 max. by export file.'));
             return $this->_redirectReferer();
         }
         foreach ($_orderIds as $_orderId)
@@ -136,7 +158,7 @@ class Man4x_MondialRelay_Sales_ShippingController
                 if ($_carrier instanceof Man4x_MondialRelay_Model_Carrier_Abstract)
                 {
                     $_file .= $_carrier->getFlatFileData($_order);
-                }                
+                }
             }
         }
         $_fileCharset = 'ISO-8859-1'; // possibly unicode
@@ -161,10 +183,11 @@ class Man4x_MondialRelay_Sales_ShippingController
                 $_tracks = $_shipment->getTracksCollection();
                 foreach ($_tracks as $_track)
                 {
-                    if (($_track->getParentId() == $_shipmentId) 
-                       && (FALSE !== strpos($_track->getCarrierCode(), 'mondialrelay')))
+                    if (($_track->getParentId() == $_shipmentId)
+                            && (FALSE !== strpos($_track->getCarrierCode(), 'mondialrelay')))
                     {
-                        $_trackings[] = $_track->getTrackNumber();
+                        // getTrackNumber() for Magento 1.7+ and $_track->getNumber() for older versions
+                        $_trackings[] = $_track->getTrackNumber() ? $_track->getTrackNumber() : $_track->getNumber();
                     }
                 }
             }
@@ -178,9 +201,8 @@ class Man4x_MondialRelay_Sales_ShippingController
             {
                 // Error 
                 $this->_getSession()->addError(
-                    Mage::helper('mondialrelay')->__(
-                            'An error has occurred during label recovery (%s)',
-                            Mage::helper('mondialrelay')->convertStatToTxt($_urlLabel))
+                        Mage::helper('mondialrelay')->__(
+                                'An error has occurred during label recovery (%s)', Mage::helper('mondialrelay')->convertStatToTxt($_urlLabel))
                 );
             }
             else
@@ -193,7 +215,7 @@ class Man4x_MondialRelay_Sales_ShippingController
         {
             // Error
             $this->_getSession()->addError(
-                Mage::helper('mondialrelay')->__('An error has occurred during labels recovery. Please contact Mondial Relay or try again later.'));
+                    Mage::helper('mondialrelay')->__('An error has occurred during labels recovery. Please contact Mondial Relay or try again later.'));
         }
         return $this->_redirectReferer();
     }
@@ -208,7 +230,7 @@ class Man4x_MondialRelay_Sales_ShippingController
     private function _processDownload($resource, $resourceType)
     {
         $_helper = Mage::helper('downloadable/download'); /* @var $helper Mage_Downloadable_Helper_Download */
-        
+
         $_helper->setResource($resource, $resourceType);
 
         $_fileName = $_helper->getFilename();

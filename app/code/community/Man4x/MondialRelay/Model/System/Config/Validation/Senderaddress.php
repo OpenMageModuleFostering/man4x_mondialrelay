@@ -14,7 +14,7 @@
  *
  * @project     Magento Man4x Mondial Relay Module
  * @desc        Backend model for config sender address validation
- * @author      Emmanuel Catrysse (ecatrysse@claudebell.com)
+ * @author      Emmanuel Catrysse (man4x[@]hotmail[.]fr)
  * @license     http://www.opensource.org/licenses/MIT  The MIT License (MIT)
  */
 

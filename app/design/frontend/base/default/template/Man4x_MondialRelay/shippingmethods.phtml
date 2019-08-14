@@ -16,7 +16,7 @@
  * @desc        Template for dealing Mondial Relay shipping methods (pick-up selection and pick-up info)
  *              Added through handle <checkout_onepage_shippingmethod>
  * @block       Man4x_MondialRelay_Block_Info
- * @author      Emmanuel Catrysse (ecatrysse@claudebell.com)
+ * @author      Emmanuel Catrysse (man4x[@]hotmail[.]fr)
  * @license     http://www.opensource.org/licenses/MIT  The MIT License (MIT)
  */
 ?>
@@ -42,7 +42,7 @@
                     if (<?php echo $this->onMapSelection() ?>) {
                         e.checked = false;
                         e.disable();
-                        var _link = new Element('a', {id: 'pickup-selection-link', href: 'javascript:void();'}).update("<?php echo (Mage::helper('mondialrelay')->__('Click to select your pick-up location')); ?>");
+                        var _link = new Element('a', {id: 'pickup-selection-link', href: 'javascript:void(0)'}).update("<?php echo (Mage::helper('mondialrelay')->__('Click to select your pick-up location')); ?>");
                         _parent.insert(_link);
                         
                         Event.observe(_link, 'click', function() {
@@ -71,7 +71,7 @@
                         _parent.insert(_div);
                     }
                     else if (_method.split('_').length === 5) {
-                        var _link = new Element('a', {'class': 'pickup-details-link', href: 'javascript:void();'}).update("<?php echo (Mage::helper('mondialrelay')->__('(More info)')); ?>");
+                        var _link = new Element('a', {'class': 'pickup-details-link', href: 'javascript:void(0)'}).update("<?php echo (Mage::helper('mondialrelay')->__('(More info)')); ?>");
                         e.next('p').insert(_link);                        
 
                         Event.observe(_link, 'click', function() {

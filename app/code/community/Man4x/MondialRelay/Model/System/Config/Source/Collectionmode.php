@@ -13,42 +13,26 @@
  * IN THE SOFTWARE.
  *
  * @project     Magento Man4x Mondial Relay Module
- * @desc        Mondial Relay carrier model class for home deliveries
+ * @desc        Available values for parcel collection mode for Mondial Relay
  * @author      Emmanuel Catrysse (man4x[@]hotmail[.]fr)
  * @license     http://www.opensource.org/licenses/MIT  The MIT License (MIT)
  */
 
-class Man4x_MondialRelay_Model_Carrier_Home
-    extends Man4x_MondialRelay_Model_Carrier_Abstract
-{    
-    
-    protected $_code = 'mondialrelayhome';
+class Man4x_MondialRelay_Model_System_Config_Source_Collectionmode {
 
-    /**
-     * Define the Mondial Relay home delivery methods
-     * 
-     * @return array 
-     */
-    static public function getAllMethods($mode = null)
+    public function toOptionArray()
     {
-        return parent::getAllMethods('mondialrelayhome');
+        $_arr = array(
+            array(
+                'value' => 'CCC',
+                'label' => Mage::helper('mondialrelay')->__("At sender's address / Mondial Relay agency"),
+                ),
+            array(
+                'value' => 'REL',
+                'label' => Mage::helper('mondialrelay')->__('At pick-up'),
+                ),
+        );
+        return $_arr;
     }
-    
-        /**
-     *  Get params for CSV export
-     *  !!! Keep parameters in strict order !!!
-     *  Subclasses precise their own specific parameters
-     * 
-     *  @param Mage_Sales_Model_Order $order
-     *  @return string
-     */
-    public function getFlatFileData(Mage_Sales_Model_Order $order)
-    {
-        $_record = parent::getFlatFileData($order);
-        $_record[16] = 'D'; // Shipping type (<R>elais, <D>omicile)
-        $_csvLine = implode(Man4x_MondialRelay_Model_Carrier_Abstract::CSV_SEPARATOR, $_record);
-        $_csvLine .= Man4x_MondialRelay_Model_Carrier_Abstract::CSV_EOL;
-        return $_csvLine; 
-    }
-    
+
 }

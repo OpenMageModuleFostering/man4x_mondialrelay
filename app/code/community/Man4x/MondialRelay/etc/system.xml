@@ -74,6 +74,46 @@
                             <show_in_website>0</show_in_website>
                             <show_in_store>0</show_in_store>
                         </url_tracking>
+                        <auto_ws translate="label">
+                            <label>Web service registration for single shipment</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <comment>If enabled, the [SHIP] button on the order page and the [Create shipment] checkbox when invoicing will trigger a web service registration for the parcel.</comment>
+                            <sort_order>170</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </auto_ws>
+                        <collection_mode translate="label">
+                            <label>Parcels collection mode</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>mondialrelay/system_config_source_collectionmode</source_model>
+                            <sort_order>180</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>                            
+                        </collection_mode>
+                        <collection_pickup translate="label">
+                            <label>Collection pick-up code</label>
+                            <depends>
+                                <collection_mode>REL</collection_mode>
+                            </depends>
+                            <frontend_type>text</frontend_type>
+                            <comment>6 digits. See Mondial Relay website for pick-up codes</comment>
+                            <sort_order>185</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>                            
+                        </collection_pickup>
+                        <display_weight translate="label">
+                            <label>Add order weight to shipping method title</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>190</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </display_weight>
                         <sender_address translate="label">
                             <label>Sender Address</label>
                             <frontend_type>textarea</frontend_type>

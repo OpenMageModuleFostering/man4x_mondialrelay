@@ -14,7 +14,7 @@
  *
  * @project     Magento Man4x Mondial Relay Module
  * @desc        Controller
- * @author      Emmanuel Catrysse (ecatrysse@claudebell.com)
+ * @author      Emmanuel Catrysse (man4x[@]hotmail[.]fr)
  * @license     http://www.opensource.org/licenses/MIT  The MIT License (MIT)
  */
 
@@ -276,8 +276,8 @@ class Man4x_MondialRelay_IndexController
         {
             $_result = $this->_setResult(
                     'error',
-                    'Mondial Relay service temporary unavailable.',
-                    $_wsResult->STAT);    
+                    'No matching result for this post code in this country',
+                    false);    
         }
         else
         {

@@ -14,7 +14,7 @@
  *
  * @project     Magento Man4x Mondial Relay Module
  * @desc        Special Mondial Relay shipping methods template for checkout
- * @author      Emmanuel Catrysse (ecatrysse@claudebell.com)
+ * @author      Emmanuel Catrysse (man4x[@]hotmail[.]fr)
  * @license     http://www.opensource.org/licenses/MIT  The MIT License (MIT)
  */
 
@@ -45,14 +45,14 @@ class Man4x_MondialRelay_Block_Checkout_Shippingmethods
     // Get Pick-up popup URL
     public function getPickupPopupUrl()
     {
-        $_url = $this->getUrl() . 'mondialrelay/index/pickuppopup';
+        $_url = Mage::getUrl('mondialrelay/index/pickuppopup', array('_secure' => Mage::app()->getFrontController()->getRequest()->isSecure())); 
         return $_url;
     }
     
     // Get Pick-up details URL
     public function getPickupInfoUrl()
     {
-        $_url = $this->getUrl() . 'mondialrelay/index/pickupinfo';
+        $_url = Mage::getUrl('mondialrelay/index/pickupinfo', array('_secure' => Mage::app()->getFrontController()->getRequest()->isSecure())); 
         return $_url;
     }
     

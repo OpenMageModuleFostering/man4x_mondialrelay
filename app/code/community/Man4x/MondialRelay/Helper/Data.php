@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright (c) 2013 Man4x
  *
@@ -14,16 +15,15 @@
  *
  * @project     Magento Man4x Mondial Relay Module
  * @description Helper for web services        
- * @author      Emmanuel Catrysse (ecatrysse@claudebell.com)
+ * @author      Emmanuel Catrysse (man4x[@]hotmail[.]fr)
  * @license     http://www.opensource.org/licenses/MIT  The MIT License (MIT)
  */
-
-class Man4x_MondialRelay_Helper_Data
-    extends Mage_Core_Helper_Abstract {
+class Man4x_MondialRelay_Helper_Data extends Mage_Core_Helper_Abstract
+{
 
     const LOG_FILE = 'man4x_mondialrelay_debug.log';
     const CSV_EOL = "\r\n";
-    
+
     // WS Error messages
     protected $_statArray = array(
         '1' => 'Invalid Company Name',
@@ -126,6 +126,17 @@ class Man4x_MondialRelay_Helper_Data
         '98' => 'Unavailable Service',
         '99' => 'Service Generic Error'
     );
+    // Phone international prefix
+    protected $_phoneIntPrefix = array(
+        'NL' => '31',
+        'BE' => '32',
+        'FR' => '33',
+        'ES' => '34',
+        'LU' => '352',
+        'AD' => '376',
+        'MC' => '377',
+        'DE' => '49'
+    );
 
     /**
      * Explode $str in $nb lines after removing comments
@@ -142,14 +153,20 @@ class Man4x_MondialRelay_Helper_Data
         if ($str)
         {
             $_hasLF = strpos("\n", $str);
-            if (FALSE === $_hasLF) {str_replace("\r", "\n", $str);} // MacOS -> all CR replaced with LF
+            if (FALSE === $_hasLF)
+            {
+                str_replace("\r", "\n", $str);
+            } // MacOS -> all CR replaced with LF
             str_replace("\r", '', $str); // Remove all CR                
             preg_replace('#/\*[^*]*\*+([^/][^*]*\*+)*/#', '', $str); // Remove comments
             $_lines = explode("\n", $str);
             if ($nb)
             {
                 $nb -= count($_lines);
-                while ($nb-- > 0) {$_lines[] = $default;}
+                while ($nb-- > 0)
+                {
+                    $_lines[] = $default;
+                }
             }
         }
         return $_lines;
@@ -177,7 +194,7 @@ class Man4x_MondialRelay_Helper_Data
         }
         return ceil($weight);
     }
-    
+
     /**
      * Remove accent, uppercase and truncate
      * cf http://www.weirdog.com/blog/php/supprimer-les-accents-des-caracteres-accentues.html
@@ -201,7 +218,7 @@ class Man4x_MondialRelay_Helper_Data
         $str = preg_replace('#&[^;]+;#', '', $str);
 
         return strtoupper($str);
-    }       
+    }
 
     /**
      * Convert WS error code into error message
@@ -211,9 +228,12 @@ class Man4x_MondialRelay_Helper_Data
      */
     public function convertStatToTxt($stat)
     {
-        if (isset($this->_statArray[$stat])) {
+        if (isset($this->_statArray[$stat]))
+        {
             return $this->__($this->_statArray[$stat]);
-        } else {
+        }
+        else
+        {
             return $this->__('Unknown Error') . ' - ' . $stat;
         }
     }
@@ -228,13 +248,13 @@ class Man4x_MondialRelay_Helper_Data
      */
     public function logDebugData($data, $errorCode = '0')
     {
-        if ((int)$errorCode)
+        if ((int) $errorCode)
         {
             $data['mondialrelay_ws_error_msg'] = $this->convertStatToTxt($errorCode);
         }
-        Mage::log(print_r($data, true) . self::CSV_EOL, Zend_Log::DEBUG, self::LOG_FILE, true);        
+        Mage::log(print_r($data, true) . self::CSV_EOL, Zend_Log::DEBUG, self::LOG_FILE, true);
     }
-    
+
     /**
      * Sort pick-up by nearness
      * 
@@ -244,8 +264,59 @@ class Man4x_MondialRelay_Helper_Data
      */
     public function sortByNearness($a, $b)
     {
-        if ($a['distance'] == $b['distance']) {return 0;}
-        return ($a['distance'] < $b['distance']) ? -1 : 1; 
+        if ($a['distance'] == $b['distance'])
+        {
+            return 0;
+        }
+        return ($a['distance'] < $b['distance']) ? -1 : 1;
     }
+
+    /**
+     * Format phone number
+     * 	- remove non-numerical chars and international prefix
+     * 	- replace phone with altphone is phone is "0+"
+     * 
+     * @param string phone
+     * @param string country
+     * @param string altphone
+     * @return string 
+     */
+    public function formatPhone($phone, $country, $altphone)
+    {
+        $phone = preg_replace("/[^0-9]/", "", $phone);
+        $_prefix = isset($this->_phoneIntPrefix[$country]) ? $this->_phoneIntPrefix[$country] : '';
+        if ($_prefix === substr($phone, 0, strlen($_prefix)))
+        {
+            $phone = 0 . substr($phone, strlen($_prefix));
+        }
+        $_nullphone = str_repeat('0', strlen($phone));
+        if ($_nullphone === $phone)
+        {
+            $phone = $altphone;
+        }
+        return $phone;
+    }
+
+    /**
+     * Check if shipment has already a Mondial Relay track
+     * 
+     * @param Mage_Sales_Model_Order_Shipment shipment
+     * @return bool 
+     */
+    public function isFirstMRTrack($shipment)
+    {
+        if ($shipment instanceof Mage_Sales_Model_Order_Shipment)
+        {
+            foreach ($shipment->getAllTracks() as $_track)
+            {
+                if (-1 !== strpos($_track->getCarrierCode(), 'mondialrelay'))
+                {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
 }
 

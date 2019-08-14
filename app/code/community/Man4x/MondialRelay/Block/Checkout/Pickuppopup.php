@@ -14,7 +14,7 @@
  *
  * @project     Magento Man4x Mondial Relay Module
  * @desc        Mondial Relay pickup selection popup block
- * @author      Emmanuel Catrysse (ecatrysse@claudebell.com)
+ * @author      Emmanuel Catrysse (man4x[@]hotmail[.]fr)
  * @license     http://www.opensource.org/licenses/MIT  The MIT License (MIT)
  */
 
@@ -79,25 +79,26 @@ class Man4x_MondialRelay_Block_Checkout_Pickuppopup
     
     public function getPickupGatheringUrl()
     {
-        $_url = $this->getUrl() . 'mondialrelay/index/gatherpickups';
-        return $_url;
+		$_url = Mage::getUrl('mondialrelay/index/gatherpickups', array('_secure' => Mage::app()->getFrontController()->getRequest()->isSecure()));
+		return $_url;
     }
     
     public function getPickupDetailsUrl()
     {
-        $_url = $this->getUrl() . 'mondialrelay/index/detailspickup';
+        $_url = Mage::getUrl('mondialrelay/index/detailspickup', array('_secure' => Mage::app()->getFrontController()->getRequest()->isSecure())); 
         return $_url;
     }
     
     public function getSavePickupinSessionUrl()
     {
-        $_url = $this->getUrl() . 'mondialrelay/index/savepickupinsession';
+        $_url = Mage::getUrl('mondialrelay/index/savepickupinsession', array('_secure' => Mage::app()->getFrontController()->getRequest()->isSecure())); 
         return $_url;
     }
     
     public function getLocaleStr()
     {
         $_jsArray =     '{info: "' . $this->__('Pick-up details') . '",';
+        $_jsArray .=    'empty_postcode: "' . $this->__('Please enter a post code to run the search') . '",';
         $_jsArray .=    'select: "' . $this->__('Select this pick-up') . '"}';
         return $_jsArray;
     }

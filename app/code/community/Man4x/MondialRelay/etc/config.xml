@@ -2,7 +2,7 @@
 <config>
     <modules>
         <Man4x_MondialRelay>
-            <version>1.1.6</version>	
+            <version>1.4.2</version>	
             <depends>
                 <Mage_Adminhtml />
                 <Mage_Shipping />
@@ -124,6 +124,9 @@
                 <company_ref_tracking>BDTEST1311</company_ref_tracking>
                 <key_tracking>PrivateK</key_tracking>
                 <url_tracking>http://www.mondialrelay.fr/lg_fr/espaces/url/popup_exp_details.aspx?cmrq=</url_tracking>
+                <auto_ws>1</auto_ws>
+                <collection_mode>CCC</collection_mode>
+                <display_weight>1</display_weight>
                 <sender_address>EXPEDITEUR
 Adresse
 Adresse (complément)

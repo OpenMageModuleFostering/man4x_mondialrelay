@@ -15,7 +15,7 @@
  * @project     Magento Man4x Mondial Relay Module
  * @desc        Template for pickup info popup
  * @block       Man4x_MondialRelay_Block_Checkout_Pickuppopup
- * @author      Emmanuel Catrysse (ecatrysse@claudebell.com)
+ * @author      Emmanuel Catrysse (man4x[@]hotmail[.]fr)
  * @license     http://www.opensource.org/licenses/MIT  The MIT License (MIT)
  */
 ?>
@@ -57,7 +57,9 @@ window.document.body.appendChild(script);
     </div>
 
     <div id="pickup-form">
-        <img id="pickup-picture" src="<?php echo $this->getPickupPicture() ?>" />
+        <h2 id="pickup-results-title"><?php echo $this->__('Pick-up details') ?></h2>
+        <h1><?php echo $this->getPickupName() ?></h1>
+        <p class="p-address"><?php echo $this->getPickupAddress() ?></p>
         <?php if ($_locHint = $this->getPickupLocHint()): ?>
             <div id="pickup-lochint">
                 <?php echo $_locHint ?>
@@ -66,11 +68,9 @@ window.document.body.appendChild(script);
     </div>
     
     <div id="pickup-results">
-        <h2 id="pickup-results-title"><?php echo $this->__('Pick-up details') ?></h2>
         <div id="pickup-results-data">
+            <img id="pickup-picture" src="<?php echo $this->getPickupPicture() ?>" />
             <div class="p-item">
-                <h1><?php echo $this->getPickupName() ?></h1>
-                <p class="p-address"><?php echo $this->getPickupAddress() ?></p>
                 <table class="p-details">
                     <?php echo $this->getPickupOpeningHours() ?>
                 </table>
@@ -78,8 +78,8 @@ window.document.body.appendChild(script);
         </div>
     </div>
         
-    <div id="pickup-map" style="clear: both; width: 100%; height: 300px;">
-        <div id="pickup-map-canvas" style="width: 100%; height: 300px;"></div>
+    <div id="pickup-map">
+        <div id="pickup-map-canvas" style="width: 100%; height: 100%;"></div>
     </div>        
               
 </div>
