@@ -272,30 +272,20 @@ class Man4x_MondialRelay_IndexController
         
         $_wsResult = Man4x_MondialRelay_Model_Carrier_Pickup::wsGetPickups($postcode, $countryId);
         
-        if (! is_array($_wsResult))
+        if (false === $_wsResult)
         {
             $_result = $this->_setResult(
                     'error',
                     'Mondial Relay service temporary unavailable.',
-                    $_wsResult);    
+                    $_wsResult->STAT);    
         }
         else
-		{
-			if (0 == count($_wsResult))
-			{
-            	$_result = $this->_setResult(
-                    'error',
-                    'No matching pick-up for this postcode.',
-					0);    
-			}
-			else
-        	{
-           		$_result = array(
-               		'type'   => 'pickup-list',
-               		'title'  => Mage::helper('mondialrelay')->__('Pick-up List'),
-               		'data'   => $_wsResult,
-           		);
-			}
+        {
+           $_result = array(
+               'type'   => 'pickup-list',
+               'title'  => Mage::helper('mondialrelay')->__('Pick-up List'),
+               'data'   => $_wsResult,
+           );
         }
         return $_result;
     }

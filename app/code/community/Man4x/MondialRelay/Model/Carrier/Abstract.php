@@ -511,15 +511,7 @@ class Man4x_MondialRelay_Model_Carrier_Abstract
 
         // $order->getShippingMethod() formated as carrier . _ . method (e.g. mondialrelaypickup_24R_00000)
         $_shippingMethod = explode('_', $order->getShippingMethod());
-		
-		// Format phone number (remove all non-numerical characters and international prefix - restore then the front 0)
-		$_phone = preg_replace("/[^0-9\+]/", "", $order->getBillingAddress()->getTelephone());
-		$_country = $order->getShippingAddress()->getCountry();
-		if (('LU' == $_country) && ('352' == substr($_phone, 0, 3))) {$_country = '0' .  substr($_phone, 3);}
-		if (('FR' == $_country) && ('33' == substr($_phone, 0, 2))) {$_country = '0' .  substr($_phone, 2);}
-		if (('BE' == $_country) && ('32' == substr($_phone, 0, 2))) {$_country = '0' .  substr($_phone, 2);}
-		if (('ES' == $_country) && ('34' == substr($_phone, 0, 2))) {$_country = '0' .  substr($_phone, 2);}
-				  
+        
         $_params = array(
            'Enseigne'       => $this->_getGenericConfigData('company'),
            'ModeCol'        => 'CCC', // Collection at the sender's place
@@ -542,8 +534,8 @@ class Man4x_MondialRelay_Model_Carrier_Abstract
            'Dest_Ad4'       => $_helper->removeAccent($order->getShippingAddress()->getStreet(2)),
            'Dest_Ville'     => $_helper->removeAccent($order->getShippingAddress()->getCity()),
            'Dest_CP'        => $order->getShippingAddress()->getPostcode(),
-           'Dest_Pays'      => $_helper->removeAccent($_country),
-           'Dest_Tel1'      => $_phone,
+           'Dest_Pays'      => $_helper->removeAccent($order->getShippingAddress()->getCountry()),
+           'Dest_Tel1'      => preg_replace("/[^0-9\+]/", "", $order->getBillingAddress()->getTelephone()),  // Remove all non-numerical characters
            'Dest_Mail'      => $order->getCustomerEmail(),
            'Poids'          => (string) $_parcelDetails['weight'],
            'NbColis'        => (string) $_parcelDetails['box'],

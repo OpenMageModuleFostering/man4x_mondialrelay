@@ -68,7 +68,7 @@ class Man4x_MondialRelay_Model_Carrier_Pickup
      * 
      * @param string $postcode
      * @param string $country
-     * @return  string | array 
+     * @return false | array 
      */
     static public function wsGetPickups($postcode, $country)
     {
@@ -87,17 +87,12 @@ class Man4x_MondialRelay_Model_Carrier_Pickup
         $_client = new SoapClient(Mage::getStoreConfig('carriers/mondialrelay/url_ws', true));
         $_wsResult = $_client->WSI2_RecherchePointRelaisAvancee($_params)->WSI2_RecherchePointRelaisAvanceeResult;
         
-        if (! property_exists($_wsResult, 'ListePR'))
-		{
-			return $_wsResult->STAT;
-		}
-		
-        $_pickups = array();
-		if (! property_exists($_wsResult->ListePR, 'ret_WSI2_sub_PointRelaisAvancee'))
+        if (! property_exists($_wsResult, 'ListePR') || ! property_exists($_wsResult->ListePR, 'ret_WSI2_sub_PointRelaisAvancee'))
         {
-            return $_pickups;
+            return false;
         }
         
+        $_pickups = array();
         foreach ($_wsResult->ListePR->ret_WSI2_sub_PointRelaisAvancee as $_pickup)
         {
            $_pickup = array(
