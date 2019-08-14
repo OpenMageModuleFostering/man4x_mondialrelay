@@ -1,0 +1,58 @@
+/* Mondial Relay Shipping Methods  */
+.method-description {text-indent: 0; font-style: italic; font-size: 12px;}
+.pickup-details-link {padding-left: 5px;}
+
+#pickup-selection-link {font-size: 13px; font-weight: bold; font-style: normal;}
+#pickup-please-wait {margin: 10px; background: #FFF; text-align: center; color: #AD004A;}
+#pickup-selected {text-indent: 0; margin: 5px 0 5px 5px; padding: 5px; background: #EEE; border: 1px solid #CCC; border-radius: 5px; }
+#pickup-selected .message {text-decoration: underline; margin: 0; text-indent: 0;}
+#pickup-address {
+    background: url("../images/Man4x_MondialRelay/logo_mondialrelay_20.gif") no-repeat 0 50%;
+    font-size: 14px; font-weight: bold; font-style: normal; padding: 0 0 0 25px; margin: 5px; text-indent: 0;}
+#pickup-address .name {color: #AD004A;}
+#pickup-address .address {}
+#pickup-address .postcode {}
+#pickup-address .city {}
+
+/* Pick-up Selection/Info Popup */
+#pickup-bkg {
+    -khtml-opacity: .8; -moz-opacity: .8; filter: alpha(opacity=80); opacity: .8; background: #000; height: 100%; width: 100%;
+    position: fixed; left: 0; top: 0; z-index: 1000;}
+
+#pickup-block {
+    border: 16px solid #fff; width: 742px; height: 570px; background: #fff; z-index: 1000;
+    position: fixed; top: 50%; left: 50%; margin: -300px 0 0 -371px; text-align: left; font-size: 12px;
+}
+#pickup-block h2 {
+    width: 100%; height: 25px; margin-bottom: 10px;
+    font-size: 20px; font-weight: bold; color: #AD004A; text-decoration: underline;
+}
+#pickup-close {
+    position: absolute; right: -10px; top: -10px;
+    background: url("../images/Man4x_MondialRelay/close_icon.png") no-repeat 100% 50%;
+    padding-right: 20px; font-style: italic; font-weight: bold; color: #CCC !important; cursor: pointer;}
+
+#pickup-form {float: left; width: 44%; height: 250px; margin-bottom: 20px;}
+#pickup-picture {display: block; margin: 35px auto 5px auto; padding: 5px; border: 1px solid #CCC; border-radius: 5px;}
+#pickup-lochint {text-align: center;}
+#pickup-ajax-loading {width: 100%; height: 100%; padding-top: 30px; background: #FFF; text-align: center; color: #AD004A;}
+#pickup-block .buttons-set {border: none;}
+
+#pickup-results {float: right; width: 50%; height: 250px; margin-bottom: 20px;}
+#pickup-results-data {height: 220px; overflow-y: auto; position: relative; cursor: pointer;}
+#pickup-results-data .p-item {margin: 5px 5px 5px 0; padding: 5px; border: 1px solid #CCC; border-radius: 5px; position: relative;}
+#pickup-results-data .p-item a {color: #0099FF; font-style: italic;}
+#pickup-results-data .p-item h1 {
+    background: url("../images/Man4x_MondialRelay/logo_mondialrelay_20.gif") no-repeat 0 50%;
+    color: #CA0248; font-size: 18px; line-height: 20px; font-weight: bold; text-transform: uppercase;
+    padding: 0 0 0 30px;}
+#pickup-results-data .p-item .p-address {font-weight: bold; font-size: 16px; padding: 0 0 0 30px;}
+#pickup-results-data .p-item .info-link {font-size: 10px; color: #000 !important;}
+#pickup-results-data .p-item .select-link {float: right; display: none; position: absolute; right: 2px; bottom: 2px;}
+#pickup-results-data .is-active {background-color: #eee;}
+#pickup-results-data .is-active .select-link {display: block; padding: 2px 5px; border: 1px outset; color: #FFF; font-weight: bold; background: #CA0248;}
+#pickup-results-data .p-item .p-details {margin: 10px 10px 10px 20px;}
+#pickup-results-data .p-item .p-details .day {font-weight: bold; padding-right: 30px;}
+#pickup-results-data .p-item .p-details .hours {}
+
+#pickup-map {clear: both; width: 100%; height: 300px; border: 2px solid #CCC;}
