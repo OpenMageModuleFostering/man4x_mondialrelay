@@ -2,7 +2,7 @@
 <config>
     <modules>
         <Man4x_MondialRelay>
-            <version>1.4.5</version>	
+            <version>1.4.6</version>	
             <depends>
                 <Mage_Adminhtml />
                 <Mage_Shipping />
@@ -127,6 +127,7 @@
                 <auto_ws>1</auto_ws>
                 <collection_mode>CCC</collection_mode>
                 <display_weight>1</display_weight>
+                <label_size>A4</label_size>
                 <sender_address>EXPEDITEUR
 Adresse
 Adresse (complément)

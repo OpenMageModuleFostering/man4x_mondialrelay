@@ -123,7 +123,10 @@ class Man4x_MondialRelay_Model_Carrier_Abstract extends Mage_Shipping_Model_Carr
         $_client = new SoapClient(Mage::getStoreConfig('carriers/mondialrelay/url_ws', true));
         $_label = $_client->WSI2_GetEtiquettes($_params)->WSI2_GetEtiquettesResult;
 
-        $_result = ('0' == $_label->STAT) ? self::BASE_URL . $_label->URL_PDF_A5 : $_label->STAT;
+        $_labelsize = Mage::getStoreConfig('carriers/mondialrelay/label_size', true);
+        $_result = ('0' == $_label->STAT) ? 
+                self::BASE_URL . (('A4' == $_labelsize) ? $_label->URL_PDF_A4 : $_label->URL_PDF_A5)
+                : $_label->STAT;
         return $_result;
     }
 
