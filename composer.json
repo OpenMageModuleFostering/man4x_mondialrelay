@@ -1,17 +1,5 @@
 {
-    "name": "OpenMageModuleFostering/man4x_mondialrelay",
-    "type": "magento-module",
-    "license": "Massachusetts-Institute-of-Technology-License-(MITL)",
-    "homepage": "",
-    "description": "(EN) Mondial Relay Shipping Methods Module for Magento.
-(FR) Module de Gestion des Expéditions Mondial Relay pour Magento",
-    "authors": [
-    {
-        "name": "Emmanuel Catrysse",
-        "email": "man4x@hotmail.fr"
-    }
-],
-    "suggest": {
-        "magento-hackathon/magento-composer-installer": "*"
-    }
+    "keywords": [
+        "openmage-module"
+    ]
 }
